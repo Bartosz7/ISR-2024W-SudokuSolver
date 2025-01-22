@@ -7,6 +7,7 @@ from torchvision import transforms
 from PIL import Image
 import os
 
+
 class DigitDataset(Dataset):
     def __init__(self, folder_path, transform=None):
         self.folder_path = folder_path
@@ -26,13 +27,14 @@ class DigitDataset(Dataset):
         return len(self.image_paths)
 
     def __getitem__(self, idx):
-        image = Image.open(self.image_paths[idx]).convert('L')  # single-channel
+        image = Image.open(self.image_paths[idx]).convert("L")  # single-channel
         label = self.labels[idx]
 
         if self.transform:
             image = self.transform(image)
 
         return image, label
+
 
 class SimpleDigitCNN(nn.Module):
     def __init__(self, dropout_p=0.5):
@@ -48,7 +50,7 @@ class SimpleDigitCNN(nn.Module):
         # After conv1 -> pool -> conv2 -> pool -> conv3 -> pool
         # Dimensions: 64 -> 32 -> 16 -> 8
         # Flatten: 64 * 8 * 8 = 4096
-        self.fc1 = nn.Linear(64*8*8, 128)
+        self.fc1 = nn.Linear(64 * 8 * 8, 128)
         self.fc2 = nn.Linear(128, 9)
 
     def forward(self, x):
@@ -62,22 +64,20 @@ class SimpleDigitCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-def train_model(
-    train_folder,
-    test_split=0.2,
-    num_epochs=10,
-    batch_size=16
-):
+
+def train_model(train_folder, test_split=0.2, num_epochs=10, batch_size=16):
     print("Starting training setup...")
 
     # Transform includes data augmentation and normalization
-    transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.RandomRotation(10),
-        transforms.RandomAffine(0, translate=(0.1, 0.1)),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5], [0.5])
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.Resize((64, 64)),
+            transforms.RandomRotation(10),
+            transforms.RandomAffine(0, translate=(0.1, 0.1)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.5], [0.5]),
+        ]
+    )
 
     dataset = DigitDataset(train_folder, transform=transform)
     print(f"Found {len(dataset)} images in total.")
@@ -129,9 +129,11 @@ def train_model(
             if (batch_idx + 1) % 5 == 0:
                 avg_loss = train_loss / (batch_idx + 1)
                 acc = 100.0 * correct / total
-                print(f" Batch {batch_idx+1}/{len(train_loader)} "
-                      f"- Loss: {avg_loss:.4f}, "
-                      f"Accuracy: {acc:.2f}%")
+                print(
+                    f" Batch {batch_idx+1}/{len(train_loader)} "
+                    f"- Loss: {avg_loss:.4f}, "
+                    f"Accuracy: {acc:.2f}%"
+                )
 
         scheduler.step()
 
@@ -153,11 +155,13 @@ def train_model(
 
     return model
 
-def save_model(model, path='digit_model.pth'):
+
+def save_model(model, path="digit_model.pth"):
     torch.save(model.state_dict(), path)
     print(f"Model saved to {path}")
 
-def load_model(path='digit_model.pth', device=None):
+
+def load_model(path="digit_model.pth", device=None):
     # If device is not specified, use "cuda" if available
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

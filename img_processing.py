@@ -6,7 +6,7 @@ import cv2
 
 
 def load_random_jpg(data_path):
-    jpg_files = list(data_path.rglob('*.jpg'))
+    jpg_files = list(data_path.rglob("*.jpg"))
     if not jpg_files:
         return None
     file = random.choice(jpg_files)
@@ -40,8 +40,10 @@ def plot_original_and_cells(original_image, cells, spacing=5, border_thickness=2
             # green border
             canvas[y_start:y_end, x_start:x_end] = [0, 255, 0]
             # place the cell inside the border
-            canvas[y_start + border_thickness:y_end - border_thickness,
-                   x_start + border_thickness:x_end - border_thickness] = cv2.cvtColor(cells[i][j], cv2.COLOR_GRAY2BGR)
+            canvas[
+                y_start + border_thickness : y_end - border_thickness,
+                x_start + border_thickness : x_end - border_thickness,
+            ] = cv2.cvtColor(cells[i][j], cv2.COLOR_GRAY2BGR)
 
     # extracted cells
     axes[1].imshow(canvas)
