@@ -43,8 +43,10 @@ class SimpleDigitCNN(nn.Module):
         self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
 
+
         self.pool = nn.MaxPool2d(kernel_size=2)
         self.dropout = nn.Dropout(dropout_p)
+        self.softmax = nn.Softmax()
 
         # For an input size of 64x64 (after transforms):
         # After conv1 -> pool -> conv2 -> pool -> conv3 -> pool
@@ -62,6 +64,7 @@ class SimpleDigitCNN(nn.Module):
         x = nn.ReLU()(self.fc1(x))
         x = self.dropout(x)
         x = self.fc2(x)
+        x = self.softmax(x)
         return x
 
 
