@@ -2,8 +2,7 @@ import cv2
 import numpy as np
 import os
 import fire
-from src.predict_digit import predict_digit
-from src.cnn_arch import load_model
+from src.predict_digit import load_model, predict_digit
 from src.sudoku_solve_algoithm import solve, print_board
 
 # label smoothing as a method for smoothing probs, during trianing
@@ -100,13 +99,15 @@ def solve_sudoku_from_image(image_path: str):
     # deconstructing board into cells
     cells = fragment_image(opening)
     save_cells_as_images(cells, "tempdir")
-    model = load_model("../models/digit1.pth")
+    model, device = load_model("/content/ISR-2024W-SudokuSolver/models/final_model_0_3_with_augmented.pth")
 
     board = [[0 for j in range(9)] for i in range(9)]
     for image_path in os.listdir("tempdir"):
         row, col = int(image_path.split("_")[1]), int(image_path.split("_")[2][0])
         full_img_path = os.path.join("tempdir", image_path)
-        digit = predict_digit(model=model, image_path=full_img_path)
+        confidence, digit = predict_digit(model=model, device=device,image_path=full_img_path)
+        print(row, col, confidence, digit)
+        
         board[row][col] = digit
     board = np.array(board)
     return board
