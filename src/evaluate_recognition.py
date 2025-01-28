@@ -19,7 +19,8 @@ def read_sudoku_from_dat(file_path: Path) -> np.ndarray:
 def evaluate_recognition(
     dataset_dir: str,
     image_extensions: list = [".jpg"],
-    read_recognized_func=None
+    read_recognized_func=None,
+    **kwargs
 ) -> Dict[str, float]:
     """
     Evaluates the Sudoku digit recognition based on the dataset folder.
@@ -60,7 +61,7 @@ def evaluate_recognition(
 
         # Read the expected and recognized Sudoku boards
         expected_board = read_sudoku_from_dat(dat_path)
-        recognized_board = read_recognized_func(image_path)
+        recognized_board = read_recognized_func(image_path, **kwargs)
 
         total_boards += 1
         if np.array_equal(expected_board, recognized_board):
@@ -92,13 +93,13 @@ def evaluate_recognition(
     }
 
 
-if __name__ == "__main__":
-    dataset_dir = "data/sudoku_dataset"
-    metrics = evaluate_recognition(
-        dataset_dir=dataset_dir,
-        read_recognized_func=read_sudoku_from_recognized
-    )
+# if __name__ == "__main__":
+#     dataset_dir = "data/sudoku_dataset"
+#     metrics = evaluate_recognition(
+#         dataset_dir=dataset_dir,
+#         read_recognized_func=read_sudoku_from_recognized
+#     )
 
-    print("Evaluation Metrics:")
-    for metric, value in metrics.items():
-        print(f"{metric}: {value}")
+#     print("Evaluation Metrics:")
+#     for metric, value in metrics.items():
+#         print(f"{metric}: {value}")
