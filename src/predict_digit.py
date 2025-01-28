@@ -10,9 +10,9 @@ from src.model import CNNClassifier
 torch.serialization.add_safe_globals([CNNClassifier])
 
 
-def load_model(model_path, device='auto'):
-    if device == 'auto':
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+def load_model(model_path, device="auto"):
+    if device == "auto":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device(device)
 
@@ -25,7 +25,7 @@ def load_model(model_path, device='auto'):
     return model, device
 
 
-def load_blank_classifier(model_path, device='auto'):
+def load_blank_classifier(model_path, device="auto"):
     """
     Loads the CNNClassifier model for blank cell recognition.
 
@@ -37,8 +37,8 @@ def load_blank_classifier(model_path, device='auto'):
         tuple: The loaded CNNClassifier model and the device it's loaded onto.
     """
     # Determine the device
-    if device == 'auto':
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if device == "auto":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device(device)
 
@@ -68,14 +68,16 @@ def predict_digit(model, device, image_path=None, image=None, topk=3):
     if image_path is not None:
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Image not found at {image_path}")
-        image = Image.open(image_path).convert('L')
+        image = Image.open(image_path).convert("L")
 
     # Define preprocessing pipeline
-    transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5], [0.5])
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.Resize((64, 64)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.5], [0.5]),
+        ]
+    )
 
     image_tensor = transform(image).unsqueeze(0).to(device)
 

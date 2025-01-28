@@ -20,7 +20,7 @@ def evaluate_recognition(
     dataset_dir: str,
     image_extensions: list = [".jpg"],
     read_recognized_func=None,
-    **kwargs
+    **kwargs,
 ) -> Dict[str, float]:
     """
     Evaluates the Sudoku digit recognition based on the dataset folder.
@@ -34,7 +34,9 @@ def evaluate_recognition(
         dict: Dictionary containing evaluation metrics.
     """
     if not read_recognized_func:
-        raise ValueError("Please provide a function to recognize Sudoku boards from images.")
+        raise ValueError(
+            "Please provide a function to recognize Sudoku boards from images."
+        )
 
     total_boards = 0
     total_correct_boards = 0
@@ -78,9 +80,13 @@ def evaluate_recognition(
                     digit_errors[(i, j)] += 1
 
     # Compute metrics
-    avg_recognition_per_board = total_correct_digits / total_digits if total_digits > 0 else 0
+    avg_recognition_per_board = (
+        total_correct_digits / total_digits if total_digits > 0 else 0
+    )
     fully_correct_boards = total_correct_boards
-    overall_digit_accuracy = total_correct_digits / total_digits if total_digits > 0 else 0
+    overall_digit_accuracy = (
+        total_correct_digits / total_digits if total_digits > 0 else 0
+    )
     error_rate = total_errors / total_digits if total_digits > 0 else 0
 
     return {

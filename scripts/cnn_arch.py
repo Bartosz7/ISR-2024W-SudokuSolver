@@ -43,7 +43,6 @@ class SimpleDigitCNN(nn.Module):
         self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
 
-
         self.pool = nn.MaxPool2d(kernel_size=2)
         self.dropout = nn.Dropout(dropout_p)
         self.softmax = nn.Softmax()

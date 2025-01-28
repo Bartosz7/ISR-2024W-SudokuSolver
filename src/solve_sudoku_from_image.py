@@ -39,7 +39,7 @@ def fragment_image(board_image):
         row = []
         for j in range(9):
             x, y = j * cell_width, i * cell_height
-            cell = board_image[y:y + cell_height, x:x + cell_width]
+            cell = board_image[y : y + cell_height, x : x + cell_width]
             row.append(cell)
         cells.append(row)
     return cells
@@ -61,10 +61,14 @@ def is_cell_empty(cell_image, blank_classifier, device, threshold=0.5):
     blank_classifier.eval()  # Set model to evaluation mode
 
     # Resize the cell image to the expected input size
-    cell_image = cv2.resize(cell_image, (28, 28))  # Ensure this matches the training size
+    cell_image = cv2.resize(
+        cell_image, (28, 28)
+    )  # Ensure this matches the training size
 
     # Preprocess the cell image
-    cell_tensor = torch.tensor(cell_image, dtype=torch.float32).unsqueeze(0).unsqueeze(0)  # Add batch and channel dimensions
+    cell_tensor = (
+        torch.tensor(cell_image, dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+    )  # Add batch and channel dimensions
     cell_tensor = cell_tensor.to(device) / 255.0  # Normalize to [0, 1]
 
     # Run inference
@@ -77,7 +81,9 @@ def is_cell_empty(cell_image, blank_classifier, device, threshold=0.5):
     return not (blank_prob > threshold)
 
 
-def solve_sudoku_from_image(image_path: str, print_results: bool = False, solve_sudoku: bool = True):
+def solve_sudoku_from_image(
+    image_path: str, print_results: bool = False, solve_sudoku: bool = True
+):
     """Main function for solving sudoku board from image."""
     # load and convert to grayscale
     image = cv2.imread(str(image_path))
@@ -110,7 +116,9 @@ def solve_sudoku_from_image(image_path: str, print_results: bool = False, solve_
 
     # Load the blank cell classifier
     blank_classifier = CNNClassifier()
-    blank_classifier.load_state_dict(torch.load("../models/blank_cell_classifier_1.pth"))
+    blank_classifier.load_state_dict(
+        torch.load("../models/blank_cell_classifier_1.pth")
+    )
     blank_classifier.to(device)
     blank_classifier.eval()
 
@@ -123,7 +131,9 @@ def solve_sudoku_from_image(image_path: str, print_results: bool = False, solve_
         if is_cell_empty(cell_img, blank_classifier, device):
             board[row][col] = 0
         else:
-            confidence, digit = predict_digit(model=model, device=device,image_path=full_img_path)
+            confidence, digit = predict_digit(
+                model=model, device=device, image_path=full_img_path
+            )
             # print(row, col, digit, confidence)
             board[row][col] = digit
     board = np.array(board)
